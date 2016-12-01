@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
 #include <fstream>
-
+#include <stdlib.h>
 #include "table.h"
 #include "compagnie.h"
 
 using namespace std;
+
+vector<Compagnie> listeCompagnies;
+vector<Table> listeTables;
 
 void printResult(vector<Table> &lTable) {
 	cout << "---------- RESULTAT ----------" << endl;
@@ -14,6 +17,18 @@ void printResult(vector<Table> &lTable) {
 	}
 	cout << "fin" << endl;
 }
+
+void doChange(int indexCompagnie) {
+	int indexTable = rand()%listeTables.size();
+	int compagnieToRemove = -1;
+	do {
+		compagnieToRemove = listeTables[indexTable].findEnemy(listeCompagnies[indexCompagnie]);
+		if (compagnieToRemove != -1)
+			listeTables[indexTable].retirerCompagnie(listeCompagnies[compagnieToRemove]);
+	} while (compagnieToRemove != -1);	
+	listeTables[indexTable].ajouterCompagnie(listeCompagnies[indexCompagnie]);
+}
+
 int main(int argc, char* argv[]) {
 
     string fileName = argv[1];
@@ -26,7 +41,7 @@ int main(int argc, char* argv[]) {
 		file >> n;
 		cout << "nTable : " << n << endl;
 		// Initialisation des tables
-		vector<Table> listeTables;
+		
 		listeTables.reserve(n);
 		for (int i = 0; i < n; ++i) {
 			listeTables.push_back(0);
@@ -35,7 +50,7 @@ int main(int argc, char* argv[]) {
 		// Initialisation des compagnies
 		file >> n;
 		cout << "nCompagnie : " << n << endl;
-		vector<Compagnie> listeCompagnies;
+		
 		listeCompagnies.reserve(n);
 		int nParticipants;
 		for (int i = 0; i < n; ++i) {
@@ -79,22 +94,29 @@ int main(int argc, char* argv[]) {
 		cout << "Liste3 done" << endl;
 		
 		// Algo
-		for (int i = 0; i < listeCompagnies.size(); i++) {
-			if (!listeCompagnies[i].isAssis()) {
-				int bestIndexTable = 0;
-				int bestPoints = -100;
-				for (int j = 0; j < listeTables.size(); j++) {
-					int points = listeTables[j].ajoutPossible(listeCompagnies[i]);
-					if (points > bestPoints) {
-						bestPoints = points;
-						bestIndexTable = j;
+		int nbIteration = 0;
+		while(nbIteration < 10){
+			for (int i = 0; i < listeCompagnies.size(); i++) {
+				if (!listeCompagnies[i].isAssis()) {
+					int bestIndexTable = 0;
+					int bestPoints = -100;
+					for (int j = 0; j < listeTables.size(); j++) {
+						int points = listeTables[j].ajoutPossible(listeCompagnies[i]);
+						if (points > bestPoints) {
+							bestPoints = points;
+							bestIndexTable = j;
+						}
+					}
+					if (bestPoints != -100) {
+						listeTables[bestIndexTable].ajouterCompagnie(listeCompagnies[i]);
+					} else {
+						doChange(i);
 					}
 				}
-				if (bestPoints != -100)
-					listeTables[bestIndexTable].ajouterCompagnie(listeCompagnies[i]);
 			}
+			nbIteration++;
+			printResult(listeTables);
 		}
-		printResult(listeTables);
 	}
     return 0;
 }

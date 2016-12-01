@@ -43,9 +43,18 @@ int Table::ajoutPossible(Compagnie &c) {
 	return points;
 }
 
+int Table::findEnemy(Compagnie &c) {
+	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
+		if (c.getRelation(*it) == 1)
+			return *it;
+	return -1;
+}
+
 std::ostream& operator<<(std::ostream& os, const Table& table) {
-	for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)
-		os << *it << " ";
-	os << std::endl;
+	if (!table._listeCompagnies.empty()){
+		for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)
+			os << *it << " ";
+		os << "( " << table._listeCompagnies.size() << " )" << std::endl;
+	}
 }
 
