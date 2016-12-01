@@ -2,6 +2,7 @@
 #include <vector>
 #include <fstream>
 #include <stdlib.h>
+#include <cmath>
 #include "table.h"
 #include "compagnie.h"
 
@@ -10,12 +11,41 @@ using namespace std;
 vector<Compagnie> listeCompagnies;
 vector<Table> listeTables;
 
+float calculEcartType() {
+	int somme = 0;
+	for(int i = 0; i < listeTables.size(); i++) {
+		somme += listeTables[i].getNbPersonnes();
+	}
+	float moyenne = somme/(float)listeTables.size();
+	
+	float total = 0, ecart, variance;
+	
+	for(int i = 0; i < listeTables.size(); i++) {
+		ecart = listeTables[i].getNbPersonnes() - moyenne;
+		total += ecart*ecart;
+	}
+	
+	variance = total / (float)listeTables.size();
+	return (sqrt(variance));
+}
+
+int calculPoids() {
+	int poids = 0;
+	for(int i = 0; i < listeTables.size(); i++) {
+		poids += listeTables[i].getPoids();
+	}
+	// divisé en deux parce qu'on le calcule deux fois
+	return poids/2;
+}
+
 void printResult(vector<Table> &lTable) {
 	cout << "---------- RESULTAT ----------" << endl;
 	for (int i = 0; i < lTable.size(); i++) {
 		cout << lTable[i];
 	}
 	cout << "fin" << endl;
+	cout << "Écart-type : " << calculEcartType() << endl;
+	cout << "Poids : " << calculPoids() << endl;
 }
 
 void doChange(int indexCompagnie) {
@@ -41,10 +71,9 @@ int main(int argc, char* argv[]) {
 		file >> n;
 		cout << "nTable : " << n << endl;
 		// Initialisation des tables
-		
 		listeTables.reserve(n);
 		for (int i = 0; i < n; ++i) {
-			listeTables.push_back(0);
+			listeTables.push_back(Table());
 		}
 		cout << "Table done" << endl;
 		// Initialisation des compagnies
@@ -95,7 +124,7 @@ int main(int argc, char* argv[]) {
 		
 		// Algo
 		int nbIteration = 0;
-		while(nbIteration < 10){
+		while(nbIteration < 2){
 			for (int i = 0; i < listeCompagnies.size(); i++) {
 				if (!listeCompagnies[i].isAssis()) {
 					int bestIndexTable = 0;
