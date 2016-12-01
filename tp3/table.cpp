@@ -7,14 +7,16 @@ Table::Table(int nPersonnes) :
 {	
 }
 
-void Table::ajouterCompagnie(const Compagnie &c) {
+void Table::ajouterCompagnie(Compagnie &c) {
 	_listeCompagnies.push_back(c.getIndex());
 	_nPersonnes = _nPersonnes + c.getnParticipants();
+	c.toggleAssis();
 }
 
-void Table::retirerCompagnie(const Compagnie &c) {
+void Table::retirerCompagnie(Compagnie &c) {
 	_listeCompagnies.remove(c.getIndex());
 	_nPersonnes = _nPersonnes - c.getnParticipants();
+	c.toggleAssis();
 }
 
 bool Table::estPresent(const Compagnie &c) {
@@ -24,5 +26,26 @@ bool Table::estPresent(const Compagnie &c) {
 	return false;
 }
 
+int Table::ajoutPossible(Compagnie &c) {
+	int points = 0;
+	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
+		switch(c.getRelation(*it)) {
+			case 1:
+				return -100;
+				break;
+			case 2:
+				points++;
+				break;
+			case 3:
+				points--;
+				break;
+		}
+	return points;
+}
 
+std::ostream& operator<<(std::ostream& os, const Table& table) {
+	for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)
+		os << *it << " ";
+	os << std::endl;
+}
 
