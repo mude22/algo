@@ -28,3 +28,7 @@ int Compagnie::getRelation(int indexCompagnie) {
 void Compagnie::toggleAssis() {
 	_assis = !_assis;
 }
+
+void Compagnie::resetAssis() {
+	_assis = false;
+}

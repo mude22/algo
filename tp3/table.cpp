@@ -31,25 +31,18 @@ void Table::retirerCompagnie(Compagnie &c) {
 	c.toggleAssis();
 }
 
-bool Table::estPresent(const Compagnie &c) {
-	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
-		if(*it == c.getIndex())
-			return true;
-	return false;
-}
-
 int Table::ajoutPossible(Compagnie &c) {
 	int points = 0;
 	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
 		switch(c.getRelation(*it)) {
 			case 1:
-				return -100;
+				return 100;
 				break;
 			case 2:
-				points++;
+				points--;
 				break;
 			case 3:
-				points--;
+				points++;
 				break;
 		}
 	return points;
@@ -70,6 +63,11 @@ int Table::getPoids() {
 	return _poids;
 }
 
+void Table::clearTable() {
+	_nPersonnes = 0;
+	_poids = 0;
+	_listeCompagnies.clear();
+}
 std::ostream& operator<<(std::ostream& os, const Table& table) {
 	if (!table._listeCompagnies.empty()){
 		for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)

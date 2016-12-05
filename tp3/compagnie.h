@@ -11,6 +11,7 @@ public:
 	int getnParticipants() const;
 	bool isAssis() const;
 	void toggleAssis();
+	void resetAssis();
 	void ajouterRelation(int indexCompagnie, int type);
 	int getRelation(int indexCompagnie);
 private:

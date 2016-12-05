@@ -11,12 +11,11 @@ class Table {
 		Table();
 		void ajouterCompagnie(Compagnie &c);
 		void retirerCompagnie(Compagnie &c);
-		bool estPresent(const Compagnie &c);
-		// 0 = impossible, +n = positif, -n = négatif
 		int ajoutPossible(Compagnie &c);
 		int findEnemy(Compagnie &c);
 		int getNbPersonnes();
 		int getPoids();
+		void clearTable();
 		friend std::ostream& operator<<(std::ostream &os, const Table &table);
     private:
 		int _nPersonnes;
