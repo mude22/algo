@@ -26,7 +26,4 @@ shift
 done
 
 output=$(./main $EX_PATH $PRINT $TIME)
-while read -r var
-do
-  echo "$var"
-done <<< "$output"
+echo "$output"
