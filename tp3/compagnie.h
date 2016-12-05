@@ -19,7 +19,10 @@ private:
 	int _index;
 	bool _sit;
 	
-	// 0 = ok, 1 = non, 2 = j'aime, 3 = j'aime pas
+	// 0 = Sans opinon
+	// 1 = Je ne peux pas être assis avec
+	// 2 = J'aimerais être assis avec 
+	// 3 = Je ne préfère pas être assis avec
 	std::vector<int> _vecRelationships;
 };
 

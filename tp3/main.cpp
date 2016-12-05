@@ -47,6 +47,8 @@ void printResult() {
 		cout << listTables[i];
 	}
 	cout << "fin" << endl;
+	cout << "Ecart-type: " << calculEcartType() << endl;
+	cout << "Poids: " << calculPoids() << endl;
 }
 
 void clearTables() {
@@ -62,8 +64,10 @@ void resetCompanies() {
 }
 
 void doChange(int indexCompany) {
+	// Sélectionne une table au hasard
 	int indexTable = rand()%listTables.size();
 	int companyToRemove = -1;
+	// Retire de la table toutes les compagnies incompatibles
 	do {
 		companyToRemove = listTables[indexTable].findEnemy(listCompanies[indexCompany]);
 		if (companyToRemove != -1) {
@@ -75,7 +79,8 @@ void doChange(int indexCompany) {
 			}
 		}
 	} while (companyToRemove != -1);
-	nbSit++;	
+	nbSit++;
+	// La compagnie peut maintenant être assise	
 	listTables[indexTable].addCompany(listCompanies[indexCompany]);
 }
 
@@ -140,8 +145,11 @@ int main(int argc, char* argv[]) {
 		std::clock_t nowTime;
 		nowTime = std::clock();
 		
-		while(((nowTime - startTime) / (double)(CLOCKS_PER_SEC)) < 20){
+		// Arrêt après 150 secondes
+		while(((nowTime - startTime) / (double)(CLOCKS_PER_SEC)) < 150){
+			// Mélange le vecteur de compagnies
 			random_shuffle(listCompanies.begin(), listCompanies.end());
+			// Effectue cette boucle jusqu'à ce que toutes les compagnies soient assises
 			do {
 				for (int i = 0; i < listCompanies.size(); i++) {
 					if (!listCompanies[i].isSit()) {
@@ -149,11 +157,13 @@ int main(int argc, char* argv[]) {
 						int bestPoints = 100;
 						for (int j = 0; j < listTables.size(); j++) {
 							int points = listTables[j].addPossible(listCompanies[i]);
+							// Conserve l'index de la table qui permet le meilleur score pour l'ajout de la compagnie
 							if (points < bestPoints) {
 								bestPoints = points;
 								bestIndexTable = j;
 							}
 						}
+						// Ajoute la table si c'est possible, sinon effectue des changements
 						if (bestPoints != 100) {
 							listTables[bestIndexTable].addCompany(listCompanies[i]);
 							nbSit++;
@@ -166,6 +176,7 @@ int main(int argc, char* argv[]) {
 			
 			nbSit = 0;
 			
+			// Imprimer les résultats seulement si c'est une meilleure solution
 			float scoreIteration = calculEcartType() + calculPoids();
 			if (scoreToBeat == 0 || scoreToBeat > scoreIteration) {
 				scoreToBeat = scoreIteration;
@@ -174,6 +185,7 @@ int main(int argc, char* argv[]) {
 				}
 			}
 			
+			// Reset la solution pour la prochaine itération
 			clearTables();
 			resetCompanies();
 			nowTime = std::clock();

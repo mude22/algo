@@ -31,6 +31,8 @@ void Table::removeCompany(Compagnie &c) {
 	c.toggleSit();
 }
 
+// Retourne le poids de l'ajout d'une compagnie
+// Si la compagnie ne peut être ajouté, retourne 100
 int Table::addPossible(Compagnie &c) {
 	int points = 0;
 	for (list<int>::iterator it=_listCompanies.begin(); it!=_listCompanies.end(); ++it)
