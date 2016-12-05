@@ -25,4 +25,8 @@ esac
 shift
 done
 
-printf '%s\n' $(./main $ALGO $EX_PATH $PRINT $TIME)
+output=$(./main $EX_PATH $PRINT $TIME)
+while read -r var
+do
+  echo "$var"
+done <<< "$output"

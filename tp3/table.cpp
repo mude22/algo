@@ -74,7 +74,7 @@ std::ostream& operator<<(std::ostream& os, const Table& table) {
 	if (!table._listeCompagnies.empty()){
 		for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)
 			os << *it << " ";
-		os << "(nbParticipants : " << table._nPersonnes << " ) (poids : " << table._poids/2 << " )" << std::endl;
+		os << std::endl;
 	}
 }
 
