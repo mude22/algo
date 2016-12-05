@@ -10,76 +10,73 @@
 
 using namespace std;
 
-vector<Compagnie> listeCompagnies;
-vector<Table> listeTables;
+vector<Compagnie> listCompanies;
+vector<Table> listTables;
 float scoreToBeat = 0;
-int nbCompagnieAssis = 0;
+int nbSit = 0;
 
 float calculEcartType() {
-	int somme = 0;
-	for(int i = 0; i < listeTables.size(); i++) {
-		somme += listeTables[i].getNbPersonnes();
+	int sum = 0;
+	for(int i = 0; i < listTables.size(); i++) {
+		sum += listTables[i].getNbPerson();
 	}
-	float moyenne = somme/(float)listeTables.size();
+	float average = sum/(float)listTables.size();
 
-	float total = 0, ecart, variance;
+	float total = 0, gap, variance;
 
-	for(int i = 0; i < listeTables.size(); i++) {
-		ecart = listeTables[i].getNbPersonnes() - moyenne;
-		total += ecart*ecart;
+	for(int i = 0; i < listTables.size(); i++) {
+		gap = listTables[i].getNbPerson() - average;
+		total += gap*gap;
 	}
 
-	variance = total / (float)listeTables.size();
+	variance = total / (float)listTables.size();
 	return (sqrt(variance));
 }
 
 int calculPoids() {
   int poids = 0;
-  for(int i = 0; i < listeTables.size(); i++) {
-    poids += listeTables[i].getPoids();
+  for(int i = 0; i < listTables.size(); i++) {
+    poids += listTables[i].getPoids();
   }
   // divisé en deux parce qu'on le calcule deux fois
   return poids/2;
 }
 
 void printResult() {
-	//cout << "---------- RESULTAT ----------" << endl;
-	for (int i = 0; i < listeTables.size(); i++) {
-		cout << listeTables[i];
+	for (int i = 0; i < listTables.size(); i++) {
+		cout << listTables[i];
 	}
 	cout << "fin" << endl;
-	//cout << "Écart-type : " << calculEcartType() << endl;
-	//cout << "Poids : " << calculPoids() << endl;
 }
 
 void clearTables() {
-	for (int i = 0; i < listeTables.size(); i++) {
-		listeTables[i].clearTable();
+	for (int i = 0; i < listTables.size(); i++) {
+		listTables[i].clearTable();
 	}	
 }
 
-void resetCompagnies() {
-	for (int i = 0; i < listeCompagnies.size(); i++) {
-		listeCompagnies[i].resetAssis();
+void resetCompanies() {
+	for (int i = 0; i < listCompanies.size(); i++) {
+		listCompanies[i].resetSit();
 	}
 }
 
-void doChange(int indexCompagnie) {
-	int indexTable = rand()%listeTables.size();
-	int compagnieToRemove = -1;
+void doChange(int indexCompany) {
+	int indexTable = rand()%listTables.size();
+	int companyToRemove = -1;
 	do {
-		compagnieToRemove = listeTables[indexTable].findEnemy(listeCompagnies[indexCompagnie]);
-		if (compagnieToRemove != -1) {
-			nbCompagnieAssis--;
-			for (int i = 0; i < listeCompagnies.size(); i++) {
-				if (listeCompagnies[i].getIndex() == compagnieToRemove) {
-					listeTables[indexTable].retirerCompagnie(listeCompagnies[i]);
+		companyToRemove = listTables[indexTable].findEnemy(listCompanies[indexCompany]);
+		if (companyToRemove != -1) {
+			nbSit--;
+			for (int i = 0; i < listCompanies.size(); i++) {
+				if (listCompanies[i].getIndex() == companyToRemove) {
+					listTables[indexTable].removeCompany(listCompanies[i]);
 				}
 			}
 		}
-	} while (compagnieToRemove != -1);
-	nbCompagnieAssis++;	
-	listeTables[indexTable].ajouterCompagnie(listeCompagnies[indexCompagnie]);
+	} while (companyToRemove != -1);
+	nbSit++;	
+	listTables[indexTable].addCompany(listCompanies[indexCompany]);
 }
 
 int main(int argc, char* argv[]) {
@@ -99,76 +96,75 @@ int main(int argc, char* argv[]) {
 
 		file >> n;
 		// Initialisation des tables
-		listeTables.reserve(n);
+		listTables.reserve(n);
 		for (int i = 0; i < n; ++i) {
-			listeTables.push_back(Table());
+			listTables.push_back(Table());
 		}
 
 		// Initialisation des compagnies
 		file >> n;
 		
-		listeCompagnies.reserve(n);
+		listCompanies.reserve(n);
 		int nParticipants;
 		for (int i = 0; i < n; ++i) {
 			file >> nParticipants;
-			listeCompagnies.push_back(Compagnie(nParticipants, i, n));
+			listCompanies.push_back(Compagnie(nParticipants, i, n));
 		}
 
-		// Initialisation liste1 (ne pouvant pas être assis à la même table)
+		// Initialisation relation 1 (ne pouvant pas être assis à la même table)
 		file >> n;
-		int compagnieA, compagnieB;
+		int companyA, companyB;
 		for (int i = 0; i < n; ++i) {
-			file >> compagnieA >> compagnieB;
-			listeCompagnies[compagnieA].ajouterRelation(compagnieB, 1);
-			listeCompagnies[compagnieB].ajouterRelation(compagnieA, 1);
+			file >> companyA >> companyB;
+			listCompanies[companyA].addRelationship(companyB, 1);
+			listCompanies[companyB].addRelationship(companyA, 1);
 		}
 
-		// Initialisation liste2 (souhaitant être assis à la même table)
-		file >> n;
-		for (int i = 0; i < n; ++i) {
-			file >> compagnieA >> compagnieB;
-			listeCompagnies[compagnieA].ajouterRelation(compagnieB, 2);
-			listeCompagnies[compagnieB].ajouterRelation(compagnieA, 2);
-		}
-
-		// Initialisation liste3 (souhaitant ne pas être assis à la même table)
+		// Initialisation relation 2 (souhaitant être assis à la même table)
 		file >> n;
 		for (int i = 0; i < n; ++i) {
-			file >> compagnieA >> compagnieB;
-			listeCompagnies[compagnieA].ajouterRelation(compagnieB, 3);
-			listeCompagnies[compagnieB].ajouterRelation(compagnieA, 3);
+			file >> companyA >> companyB;
+			listCompanies[companyA].addRelationship(companyB, 2);
+			listCompanies[companyB].addRelationship(companyA, 2);
 		}
 
-		// Algo
-		int nbIteration = 0;
+		// Initialisation relation 3 (souhaitant ne pas être assis à la même table)
+		file >> n;
+		for (int i = 0; i < n; ++i) {
+			file >> companyA >> companyB;
+			listCompanies[companyA].addRelationship(companyB, 3);
+			listCompanies[companyB].addRelationship(companyA, 3);
+		}
+
+		// Algorithme
 		std::clock_t nowTime;
 		nowTime = std::clock();
 		
-		while(((nowTime - startTime) / (double)(CLOCKS_PER_SEC)) < 150){
-			random_shuffle(listeCompagnies.begin(), listeCompagnies.end());
+		while(((nowTime - startTime) / (double)(CLOCKS_PER_SEC)) < 20){
+			random_shuffle(listCompanies.begin(), listCompanies.end());
 			do {
-				for (int i = 0; i < listeCompagnies.size(); i++) {
-					if (!listeCompagnies[i].isAssis()) {
+				for (int i = 0; i < listCompanies.size(); i++) {
+					if (!listCompanies[i].isSit()) {
 						int bestIndexTable = 0;
 						int bestPoints = 100;
-						for (int j = 0; j < listeTables.size(); j++) {
-							int points = listeTables[j].ajoutPossible(listeCompagnies[i]);
+						for (int j = 0; j < listTables.size(); j++) {
+							int points = listTables[j].addPossible(listCompanies[i]);
 							if (points < bestPoints) {
 								bestPoints = points;
 								bestIndexTable = j;
 							}
 						}
 						if (bestPoints != 100) {
-							listeTables[bestIndexTable].ajouterCompagnie(listeCompagnies[i]);
-							nbCompagnieAssis++;
+							listTables[bestIndexTable].addCompany(listCompanies[i]);
+							nbSit++;
 						} else {
 							doChange(i);
 						}
 					}
 				}
-			} while (nbCompagnieAssis < listeCompagnies.size());
+			} while (nbSit < listCompanies.size());
 			
-			nbCompagnieAssis = 0;
+			nbSit = 0;
 			
 			float scoreIteration = calculEcartType() + calculPoids();
 			if (scoreToBeat == 0 || scoreToBeat > scoreIteration) {
@@ -179,7 +175,7 @@ int main(int argc, char* argv[]) {
 			}
 			
 			clearTables();
-			resetCompagnies();
+			resetCompanies();
 			nowTime = std::clock();
 		}
 	}

@@ -3,38 +3,38 @@
 using namespace std;
 
 Table::Table() :
-	_nPersonnes(0), _poids(0), _listeCompagnies()
+	_nPerson(0), _poids(0), _listCompanies()
 {	
 }
 
-void Table::ajouterCompagnie(Compagnie &c) {
-	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it) {
-		if(c.getRelation(*it) == 2)
+void Table::addCompany(Compagnie &c) {
+	for (list<int>::iterator it=_listCompanies.begin(); it!=_listCompanies.end(); ++it) {
+		if(c.getRelationship(*it) == 2)
 			_poids--;
-		else if(c.getRelation(*it) == 3)
+		else if(c.getRelationship(*it) == 3)
 			_poids++;
 	}
-	_listeCompagnies.push_back(c.getIndex());
-	_nPersonnes = _nPersonnes + c.getnParticipants();
-	c.toggleAssis();
+	_listCompanies.push_back(c.getIndex());
+	_nPerson = _nPerson + c.getnParticipants();
+	c.toggleSit();
 }
 
-void Table::retirerCompagnie(Compagnie &c) {
-	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it) {
-		if(c.getRelation(*it) == 2)
+void Table::removeCompany(Compagnie &c) {
+	for (list<int>::iterator it=_listCompanies.begin(); it!=_listCompanies.end(); ++it) {
+		if(c.getRelationship(*it) == 2)
 			_poids++;
-		else if(c.getRelation(*it) == 3)
+		else if(c.getRelationship(*it) == 3)
 			_poids--;
 	}
-	_listeCompagnies.remove(c.getIndex());
-	_nPersonnes = _nPersonnes - c.getnParticipants();
-	c.toggleAssis();
+	_listCompanies.remove(c.getIndex());
+	_nPerson = _nPerson - c.getnParticipants();
+	c.toggleSit();
 }
 
-int Table::ajoutPossible(Compagnie &c) {
+int Table::addPossible(Compagnie &c) {
 	int points = 0;
-	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
-		switch(c.getRelation(*it)) {
+	for (list<int>::iterator it=_listCompanies.begin(); it!=_listCompanies.end(); ++it)
+		switch(c.getRelationship(*it)) {
 			case 1:
 				return 100;
 				break;
@@ -49,14 +49,14 @@ int Table::ajoutPossible(Compagnie &c) {
 }
 
 int Table::findEnemy(Compagnie &c) {
-	for (list<int>::iterator it=_listeCompagnies.begin(); it!=_listeCompagnies.end(); ++it)
-		if (c.getRelation(*it) == 1)
+	for (list<int>::iterator it=_listCompanies.begin(); it!=_listCompanies.end(); ++it)
+		if (c.getRelationship(*it) == 1)
 			return *it;
 	return -1;
 }
 
-int Table::getNbPersonnes() {
-	return _nPersonnes;
+int Table::getNbPerson() {
+	return _nPerson;
 }
 
 int Table::getPoids() {
@@ -64,13 +64,13 @@ int Table::getPoids() {
 }
 
 void Table::clearTable() {
-	_nPersonnes = 0;
+	_nPerson = 0;
 	_poids = 0;
-	_listeCompagnies.clear();
+	_listCompanies.clear();
 }
 std::ostream& operator<<(std::ostream& os, const Table& table) {
-	if (!table._listeCompagnies.empty()){
-		for (list<int>::const_iterator it=table._listeCompagnies.begin(); it!=table._listeCompagnies.end(); ++it)
+	if (!table._listCompanies.empty()){
+		for (list<int>::const_iterator it=table._listCompanies.begin(); it!=table._listCompanies.end(); ++it)
 			os << *it << " ";
 		os << std::endl;
 	}

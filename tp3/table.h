@@ -9,18 +9,18 @@
 class Table {
 	public:
 		Table();
-		void ajouterCompagnie(Compagnie &c);
-		void retirerCompagnie(Compagnie &c);
-		int ajoutPossible(Compagnie &c);
+		void addCompany(Compagnie &c);
+		void removeCompany(Compagnie &c);
+		int addPossible(Compagnie &c);
 		int findEnemy(Compagnie &c);
-		int getNbPersonnes();
+		int getNbPerson();
 		int getPoids();
 		void clearTable();
 		friend std::ostream& operator<<(std::ostream &os, const Table &table);
     private:
-		int _nPersonnes;
+		int _nPerson;
 		int _poids;
-		std::list<int> _listeCompagnies;
+		std::list<int> _listCompanies;
 };
 
 #endif

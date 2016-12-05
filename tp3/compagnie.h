@@ -9,18 +9,18 @@ public:
 	
 	int getIndex() const;
 	int getnParticipants() const;
-	bool isAssis() const;
-	void toggleAssis();
-	void resetAssis();
-	void ajouterRelation(int indexCompagnie, int type);
-	int getRelation(int indexCompagnie);
+	bool isSit() const;
+	void toggleSit();
+	void resetSit();
+	void addRelationship(int indexCompany, int type);
+	int getRelationship(int indexCompany);
 private:
 	int _nParticipants;
 	int _index;
-	bool _assis;
+	bool _sit;
 	
 	// 0 = ok, 1 = non, 2 = j'aime, 3 = j'aime pas
-	std::vector<int> _vecRelations;
+	std::vector<int> _vecRelationships;
 };
 
 #endif
